@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "quality_profile": {
+    "name": "sales-transactions-profile-v1",
+    "scope": ["silver"]
+  },
+  "rules": [
+    {
+      "rule_id": "DQ-SALES-001",
+      "type": "validity",
+      "description": "Verifica se a quantidade vendida e positiva.",
+      "target": {"entity": "sales_transactions", "column": "quantity"},
+      "condition": {"sql": "quantity > 0"},
+      "thresholds": {"warning": 99.0, "error": 95.0},
+      "actions": {"on_warning": ["log", "notify_slack"], "on_error": ["log", "notify_slack", "quarantine"]}
+    },
+    {
+      "rule_id": "DQ-SALES-002",
+      "type": "completeness",
+      "description": "Verifica se o preco unitario BRL nao e nulo.",
+      "target": {"entity": "sales_transactions", "column": "unit_price_brl"},
+      "condition": {"sql": "unit_price_brl IS NOT NULL"},
+      "thresholds": {"warning": 99.5, "error": 98.0},
+      "actions": {"on_warning": ["log", "notify_slack"], "on_error": ["log", "notify_slack", "quarantine"]}
+    },
+     {
+      "rule_id": "DQ-SALES-003",
+      "type": "completeness",
+      "description": "Verifica se o email do cliente nao e nulo (exemplo).",
+      "target": {"entity": "sales_transactions", "column": "customer_email"},
+      "condition": {"sql": "customer_email IS NOT NULL AND customer_email != ''"},
+      "thresholds": {"warning": 95.0, "error": 90.0},
+      "actions": {"on_warning": ["log"], "on_error": ["log", "notify_slack"]}
+    }
+  ],
+  "global_config": {
+    "evaluation_mode": "batch_aggregate",
+    "error_handling": {"allow_partial_success": false},
+    "notification_channels": {"slack": "#sales-data-quality-alerts", "pagerduty": null}
+  }
+}

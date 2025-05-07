@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "contract": {
+    "identifier": "sales-transactions-daily-v1",
+    "version": "1.0.0",
+    "validity": {
+      "effective_date": "2025-05-05",
+      "expiration_policy": "auto-renew"
+    }
+  },
+  "parties": {
+    "provider": {
+      "name": "Sistema Vendas XYZ",
+      "contact": "equipe.vendas.ti@exemplo.com"
+    },
+    "consumers": [
+      {
+        "team": "Equipe BI Vendas",
+        "usage_purpose": "Relatorios diarios e analises"
+      },
+      {
+        "team": "Equipe Data Science",
+        "usage_purpose": "Modelagem de previsao"
+      }
+    ]
+  },
+  "schema_specification": {
+    "structural": {
+      "format": "parquet",
+      "columns": [
+        {"name": "order_id", "data_type": "string", "constraints": ["not_null", "primary_key"], "description": "ID unico do pedido"},
+        {"name": "product_id", "data_type": "string", "constraints": ["not_null"], "description": "ID do produto"},
+        {"name": "quantity", "data_type": "integer", "constraints": ["not_null"], "description": "Quantidade vendida"},
+        {"name": "unit_price_brl", "data_type": "decimal(18,2)", "constraints": [], "description": "Preco unitario em BRL"},
+        {"name": "order_timestamp", "data_type": "timestamp", "constraints": ["not_null"], "description": "Data/Hora do pedido (UTC)"},
+        {"name": "customer_email", "data_type": "string", "constraints": [], "description": "Email do cliente (PII)"},
+        {"name": "status", "data_type": "string", "constraints": ["not_null"], "description": "Status do pedido (completed, pending, etc.)"},
+        {"name": "unit_price_usd", "data_type": "decimal(18,2)", "constraints": [], "description": "Preco unitario em USD (calculado)"},
+        {"name": "total_value_usd", "data_type": "decimal(18,2)", "constraints": [], "description": "Valor total do item em USD (calculado)"},
+        {"name": "order_date", "data_type": "date", "constraints": ["not_null"], "description": "Data do pedido (extraida do timestamp)"},
+        {"name": "total_quantity", "data_type": "long", "constraints": ["not_null"], "description": "Quantidade total agregada (Gold)"},
+        {"name": "total_aggregated_value_usd", "data_type": "decimal(20,2)", "constraints": ["not_null"], "description": "Valor total agregado em USD (Gold)"}
+      ]
+    },
+    "semantic": {
+      "calculated_fields": [
+        {"name": "total_value_usd", "formula": "quantity * unit_price_usd", "precision": "decimal(18,2)"}
+      ]
+    }
+  },
+  "quality_metrics": {
+    "completeness": {"threshold": 99.5, "unit": "percent", "description": "Percentual esperado de campos nao nulos"},
+    "freshness": {"max_latency_minutes": 1440, "measurement_window": "daily", "description": "Dados devem ter no maximo 1 dia de atraso"},
+    "custom_rules": [
+      {"name": "positive_quantity", "expression": "quantity > 0", "error_severity": "critical"},
+      {"name": "valid_price", "expression": "unit_price_brl IS NOT NULL AND unit_price_brl >= 0", "error_severity": "critical"}
+    ]
+  },
+  "compliance": {
+    "regulatory": {"gdpr": {"data_subject_rights": {"right_to_be_forgotten": true}}},
+    "security": {"encryption_required": true}
+  },
+  "lifecycle": {
+    "retention_policy_ref": "gov-manifest-sales-retention",
+    "deprecation_policy": {"notice_period_days": 60}
+  }
+}

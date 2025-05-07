@@ -1,0 +1,50 @@
+{
+  "DatabaseName": "db_sales_gold",
+  "Name": "sales_gold_daily_brv1",
+  "Description": "Tabela (simulada) da camada gold para sales_daily_br_v1",
+  "StorageDescriptor": {
+    "Columns": [
+      {
+        "Name": "product_id",
+        "Type": "string",
+        "Comment": "ID do produto"
+      },
+      {
+        "Name": "order_date",
+        "Type": "date",
+        "Comment": "Data do pedido (extraida do timestamp)"
+      },
+      {
+        "Name": "total_quantity",
+        "Type": "long",
+        "Comment": "Quantidade total agregada (Gold)"
+      },
+      {
+        "Name": "total_aggregated_value_usd",
+        "Type": "decimal(20,2)",
+        "Comment": "Valor total agregado em USD (Gold)"
+      }
+    ],
+    "Location": "./data/gold/sales/sales_gold_daily_brv1/",
+    "InputFormat": "Parquet",
+    "OutputFormat": "Parquet",
+    "SerdeInfo": {
+      "SerializationLibrary": "parquet"
+    }
+  },
+  "PartitionKeys": [
+    {
+      "Name": "order_date",
+      "Type": "date"
+    }
+  ],
+  "TableType": "EXTERNAL_TABLE",
+  "Parameters": {
+    "classification": "parquet",
+    "source_pipeline": "sales_daily_br_v1",
+    "data_contract_id": "sales-transactions-daily-v1",
+    "created_by_job": "sales_daily_br_v1_CreateTableJob",
+    "creation_timestamp": "2025-05-07T19:26:36.390460",
+    "is_simulated": "true"
+  }
+}

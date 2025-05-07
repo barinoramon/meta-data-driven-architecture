@@ -1,0 +1,70 @@
+{
+  "DatabaseName": "db_sales_silver",
+  "Name": "sales_silver_daily_brv1",
+  "Description": "Tabela (simulada) da camada silver para sales_daily_br_v1",
+  "StorageDescriptor": {
+    "Columns": [
+      {
+        "Name": "order_id",
+        "Type": "string",
+        "Comment": "ID unico do pedido"
+      },
+      {
+        "Name": "product_id",
+        "Type": "string",
+        "Comment": "ID do produto"
+      },
+      {
+        "Name": "quantity",
+        "Type": "integer",
+        "Comment": "Quantidade vendida"
+      },
+      {
+        "Name": "unit_price_brl",
+        "Type": "decimal(18,2)",
+        "Comment": "Preco unitario em BRL"
+      },
+      {
+        "Name": "order_timestamp",
+        "Type": "timestamp",
+        "Comment": "Data/Hora do pedido (UTC)"
+      },
+      {
+        "Name": "customer_email",
+        "Type": "string",
+        "Comment": "Email do cliente (PII)"
+      },
+      {
+        "Name": "status",
+        "Type": "string",
+        "Comment": "Status do pedido (completed, pending, etc.)"
+      },
+      {
+        "Name": "unit_price_usd",
+        "Type": "decimal(18,2)",
+        "Comment": "Preco unitario em USD (calculado)"
+      },
+      {
+        "Name": "total_value_usd",
+        "Type": "decimal(18,2)",
+        "Comment": "Valor total do item em USD (calculado)"
+      }
+    ],
+    "Location": "./data/silver/sales/sales_silver_daily_brv1/",
+    "InputFormat": "Parquet",
+    "OutputFormat": "Parquet",
+    "SerdeInfo": {
+      "SerializationLibrary": "parquet"
+    }
+  },
+  "PartitionKeys": [],
+  "TableType": "EXTERNAL_TABLE",
+  "Parameters": {
+    "classification": "parquet",
+    "source_pipeline": "sales_daily_br_v1",
+    "data_contract_id": "sales-transactions-daily-v1",
+    "created_by_job": "sales_daily_br_v1_CreateTableJob",
+    "creation_timestamp": "2025-05-07T19:26:36.370088",
+    "is_simulated": "true"
+  }
+}

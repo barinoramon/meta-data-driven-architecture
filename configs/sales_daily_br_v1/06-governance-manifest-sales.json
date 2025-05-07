@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "metadata": {"domain": "sales", "data_steward": "governancia.vendas@exemplo.com"},
+  "data_classification": {"sensitivity_level": "confidential", "tags": ["PII"]},
+  "retention_policies": {
+    "bronze": {"duration": "30d", "disposition": "delete"},
+    "silver": {"duration": "1y", "disposition": "archive_local"},
+    "gold": {"duration": "5y", "disposition": "archive_local", "backup_strategy": null}
+  },
+  "access_control": {
+    "rbac": [
+      {
+        "role": "data_analyst_sales",
+        "permissions": ["read"],
+        "applies_to_layers": ["gold"],
+        "masking_rules": [{"column": "customer_email", "type": "hash"}]
+      },
+       {
+        "role": "data_engineer_sales",
+        "permissions": ["read", "write", "alter"],
+        "applies_to_layers": ["bronze", "silver", "gold"],
+        "masking_rules": []
+      }
+    ]
+  },
+  "audit": {
+    "logging": {"access_logs": true, "query_logs": false},
+    "retention": "7y",
+    "export_settings": {"local_path": "./data/logs/audit/"}
+  },
+  "compliance": {"gdpr": {"data_subject_rights": {"right_to_be_forgotten": true}}}
+}

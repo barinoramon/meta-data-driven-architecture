@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "template": {
+    "identifier": "aggregate-daily-sales-by-product-v1",
+    "version": "1.0.0",
+    "engine": "spark_sql",
+    "description": "Agrega dados diarios de vendas por produto e data."
+  },
+  "parameters": {
+    "required": {
+      "group_by_columns": {
+         "type": "array",
+         "items": {"type": "string"},
+         "description": "Lista de colunas para agrupar (ex: product_id, order_date)."
+       },
+       "aggregation_specs": {
+         "type": "array",
+         "items": {
+           "type": "object",
+           "properties": {
+             "source_column": {"type": "string"},
+             "function": {"type": "string", "enum": ["sum", "avg", "count", "min", "max"]},
+             "target_column": {"type": "string"}
+           },
+           "required": ["source_column", "function", "target_column"]
+         },
+         "description": "Especificacoes de como agregar as colunas."
+       },
+       "timestamp_column_for_date": {
+          "type": "string",
+          "description": "Coluna de timestamp da qual a data (order_date) sera extraida."
+       }
+    },
+    "optional": {}
+  },
+  "logic": {
+    "sql_template": "WITH InputWithDate AS ( SELECT *, CAST(`{timestamp_column_for_date}` AS DATE) AS order_date FROM {input_view_or_df} ) SELECT {group_by_clause}, {aggregation_clause} FROM InputWithDate GROUP BY {group_by_clause}"
+  },
+  "validation": {
+    "unit_tests": [
+      {
+        "name": "test_daily_aggregation",
+        "input_data": {
+           "columns": ["product_id", "order_timestamp", "quantity", "total_value_usd"],
+           "rows": [
+              ["PROD_A", "2025-05-05T10:00:00Z", 2, 40.00],
+              ["PROD_B", "2025-05-05T10:15:00Z", 1, 24.10],
+              ["PROD_A", "2025-05-05T16:20:00Z", 3, 60.00]
+           ]
+         },
+        "parameters": {
+           "group_by_columns": ["product_id", "order_date"],
+           "aggregation_specs": [
+              {"source_column": "quantity", "function": "sum", "target_column": "total_quantity"},
+              {"source_column": "total_value_usd", "function": "sum", "target_column": "total_aggregated_value_usd"}
+           ],
+           "timestamp_column_for_date": "order_timestamp"
+        },
+        "expected_output": {
+           "columns": ["product_id", "order_date", "total_quantity", "total_aggregated_value_usd"],
+           "rows": [
+              ["PROD_A", "2025-05-05", 5, 100.00],
+              ["PROD_B", "2025-05-05", 1, 24.10]
+           ]
+        }
+      }
+    ]
+  },
+  "dependencies": {},
+  "compliance": {}
+}

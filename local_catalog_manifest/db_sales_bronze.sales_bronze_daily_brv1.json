@@ -1,0 +1,65 @@
+{
+  "DatabaseName": "db_sales_bronze",
+  "Name": "sales_bronze_daily_brv1",
+  "Description": "Tabela (simulada) da camada bronze para sales_daily_br_v1",
+  "StorageDescriptor": {
+    "Columns": [
+      {
+        "Name": "order_id",
+        "Type": "string",
+        "Comment": "ID unico do pedido"
+      },
+      {
+        "Name": "product_id",
+        "Type": "string",
+        "Comment": "ID do produto"
+      },
+      {
+        "Name": "quantity",
+        "Type": "integer",
+        "Comment": "Quantidade vendida"
+      },
+      {
+        "Name": "unit_price_brl",
+        "Type": "decimal(18,2)",
+        "Comment": "Preco unitario em BRL"
+      },
+      {
+        "Name": "order_timestamp",
+        "Type": "timestamp",
+        "Comment": "Data/Hora do pedido (UTC)"
+      },
+      {
+        "Name": "customer_email",
+        "Type": "string",
+        "Comment": "Email do cliente (PII)"
+      },
+      {
+        "Name": "status",
+        "Type": "string",
+        "Comment": "Status do pedido (completed, pending, etc.)"
+      },
+      {
+        "Name": "_ingestion_timestamp",
+        "Type": "timestamp",
+        "Comment": "Timestamp da ingest\u00e3o"
+      }
+    ],
+    "Location": "./data/bronze/sales/sales_bronze_daily_brv1/",
+    "InputFormat": "Parquet",
+    "OutputFormat": "Parquet",
+    "SerdeInfo": {
+      "SerializationLibrary": "parquet"
+    }
+  },
+  "PartitionKeys": [],
+  "TableType": "EXTERNAL_TABLE",
+  "Parameters": {
+    "classification": "parquet",
+    "source_pipeline": "sales_daily_br_v1",
+    "data_contract_id": "sales-transactions-daily-v1",
+    "created_by_job": "sales_daily_br_v1_CreateTableJob",
+    "creation_timestamp": "2025-05-07T19:26:36.351854",
+    "is_simulated": "true"
+  }
+}

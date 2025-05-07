@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "metadata": {
+    "pipeline_id": "sales_daily_br_v1",
+    "version": "1.0.0",
+    "domain": "sales",
+    "data_contract_id": "sales-transactions-daily-v1"
+  },
+  "source_config": {
+    "bronze": {
+      "location": "./data/landing/sales/daily/{yyyy}/{MM}/{dd}/",
+      "format": "csv",
+      "partition_template": "{yyyy}/m{MM}/{dd}",
+      "freshness_rules": {
+        "expected_interval_hours": 24,
+        "alert_on_violation": true
+      }
+    }
+  },
+  "processing": {
+    "transformations": [
+      {
+        "template_id": "filter-status-completed-v1",
+        "parameters": {
+          "status_column": "status",
+          "desired_status": "completed"
+        },
+        "target_layer_step": "silver"
+      },
+      {
+        "template_id": "currency-conversion-brl-usd-v1",
+        "parameters": {
+          "source_column": "unit_price_brl",
+          "target_column": "unit_price_usd",
+          "conversion_rate": 5.0
+        },
+        "target_layer_step": "silver"
+      },
+      {
+        "template_id": "calculate-total-value-usd-v1",
+        "parameters": {
+          "quantity_column": "quantity",
+          "unit_price_column": "unit_price_usd",
+          "target_column": "total_value_usd"
+        },
+        "target_layer_step": "silver"
+      },
+      {
+        "template_id": "aggregate-daily-sales-by-product-v1",
+        "parameters": {
+          "group_by_columns": [
+            "product_id",
+            "order_date"
+          ],
+          "aggregation_specs": [
+            {
+              "source_column": "quantity",
+              "function": "sum",
+              "target_column": "total_quantity"
+            },
+            {
+              "source_column": "total_value_usd",
+              "function": "sum",
+              "target_column": "total_aggregated_value_usd"
+            }
+          ],
+          "timestamp_column_for_date": "order_timestamp"
+        },
+        "target_layer_step": "gold"
+      }
+    ],
+    "processing_mode": "batch"
+  },
+  "destinations": [
+    {
+      "type": "data_lake",
+      "target": "./data/silver/sales/sales_silver_salesdailybr/",
+      "permissions": null
+    },
+    {
+      "type": "data_lake",
+      "target": "./data/gold/sales/sales_gold_salesdailybr/",
+      "permissions": null
+    }
+  ],
+  "governance": {
+    "data_retention": null,
+    "sla_tracking": null
+  },
+  "error_handling": {
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff_seconds": 300
+    },
+    "quarantine_config": {
+      "enabled": true,
+      "path": "./data/quarantine/sales_daily_br_v1/"
+    }
+  }
+}

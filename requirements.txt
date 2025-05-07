@@ -1,0 +1,19 @@
+# requirements.txt for MDDA Local Simulation
+
+# Core library for Spark functionality
+pyspark>=3.0.0,<4.0.0  # Especifique uma versão compatível com sua instalação local do Spark
+
+# Standard library modules used (já incluídos no Python):
+# argparse
+# json
+# datetime
+# sys
+# os
+# uuid
+
+# Optional: For interacting with local S3-compatible storage (like Minio or LocalStack)
+# Se não for usar S3 local, pode remover o boto3.
+# boto3>=1.20.0
+
+# Optional: If your JSON files contain comments (not standard JSON)
+# commentjson>=0.9.0

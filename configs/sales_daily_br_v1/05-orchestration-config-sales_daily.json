@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "environment": {"name": "dev", "region": "local"},
+  "execution_policy": {
+    "retry_strategy": {"max_attempts": 3, "backoff": "exponential", "interval_seconds": 60},
+    "timeouts": {"default": "30 minutes", "custom": []},
+    "resource_management": {"spark": {"executor_instances": 1, "driver_memory": "1g", "executor_memory": "1g"}}
+  },
+  "dependency_management": {"upstream": [], "downstream": []},
+  "alerting": {
+    "notification_channels": {"slack": {"channel": "#sales-data-alerts-dev", "severity_levels": ["warning", "critical"]}, "pagerduty": null},
+    "event_routing": {"success": ["local_audit_log"], "failure": ["local_audit_log", "slack"]}
+  },
+  "security": {"iam_role": "local_execution_role (simulated)", "encryption": null}
+}

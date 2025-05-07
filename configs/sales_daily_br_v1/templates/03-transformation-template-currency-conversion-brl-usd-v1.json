@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "template": {
+    "identifier": "currency-conversion-brl-usd-v1",
+    "version": "1.0.0",
+    "engine": "spark_sql",
+    "description": "Converte valor de uma coluna BRL para uma nova coluna USD usando taxa fixa."
+  },
+  "parameters": {
+    "required": {
+      "source_column": {"type": "string", "description": "Coluna com valor em BRL."},
+      "target_column": {"type": "string", "description": "Nome da nova coluna com valor em USD."},
+      "conversion_rate": {"type": "number", "description": "Taxa de conversao BRL para USD."}
+    },
+    "optional": {}
+  },
+  "logic": {
+    "sql": "SELECT *, CAST( `{source_column}` / {conversion_rate} AS DECIMAL(18,2) ) AS `{target_column}` FROM {input_view_or_df}"
+  },
+  "validation": {
+    "unit_tests": [
+      {
+        "name": "test_brl_usd_conversion",
+        "input_data": {"columns": ["price_brl"], "rows": [[100.0], [50.0]]},
+        "parameters": {"source_column": "price_brl", "target_column": "price_usd", "conversion_rate": 5.0},
+        "expected_output": {"columns": ["price_brl", "price_usd"], "rows": [[100.0, 20.00], [50.0, 10.00]]}
+      }
+    ]
+  },
+  "dependencies": {},
+  "compliance": {}
+}
