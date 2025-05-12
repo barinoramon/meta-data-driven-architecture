@@ -44,7 +44,14 @@
     "source_pipeline": "sales_daily_br_v1",
     "data_contract_id": "sales-transactions-daily-v1",
     "created_by_job": "sales_daily_br_v1_CreateTableJob",
-    "creation_timestamp": "2025-05-07T19:26:36.390460",
-    "is_simulated": "true"
+    "creation_timestamp": "2025-05-12T18:26:28.553727",
+    "is_simulated": "true",
+    "last_updated_timestamp": "2025-05-12T18:27:34.872017",
+    "last_updated_by_job": "sales_daily_br_v1_GlueCatalogJob",
+    "pipeline_version": "1.0.0",
+    "data_contract_version": "1.0.0",
+    "governance_manifest_version": "unknown",
+    "data_sensitivity": "confidential",
+    "last_data_processed_date": "2025-01-02"
   }
 }

@@ -229,7 +229,7 @@ class TransformationRunner:
                 final_sql = sql_template.replace("{input_view_or_df}", input_view_name)
                 for key, value in parameters.items():
                     placeholder = "{" + key + "}"
-                    replacement = f"'{value}'" if isinstance(value, str) else str(value)
+                    replacement = f"{value}" if isinstance(value, str) else str(value)
                     final_sql = final_sql.replace(placeholder, replacement)
                     placeholder_backtick = "`{" + key + "}`"
                     replacement_backtick = f"`{value}`"
@@ -401,6 +401,7 @@ class BaseJob(ABC):
                     .master("local[*]") \
                     .config("spark.sql.legacy.timeParserPolicy", "LEGACY") \
                     .config("spark.sql.sources.partitionOverwriteMode", "dynamic") \
+                    .config("spark.sql.shuffle.partitions", "1") \
                     .getOrCreate()
                 # print("INFO: Spark Session inicializada.")
             except Exception as e:

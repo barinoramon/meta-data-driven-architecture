@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from framework.mdda_framework import BaseJob, ConfigLoader # Importa do framework
 
 class GlueCatalogJob(BaseJob):

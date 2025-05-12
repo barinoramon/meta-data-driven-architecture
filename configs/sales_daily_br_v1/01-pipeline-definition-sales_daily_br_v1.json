@@ -20,7 +20,7 @@
   "processing": {
     "transformations": [
       {
-        "template_id": "filter-status-completed-v1",
+        "template_id": "03-transformation-template-filter-status-completed-v1",
         "parameters": {
           "status_column": "status",
           "desired_status": "completed"
@@ -28,7 +28,7 @@
         "target_layer_step": "silver"
       },
       {
-        "template_id": "currency-conversion-brl-usd-v1",
+        "template_id": "03-transformation-template-currency-conversion-brl-usd-v1",
         "parameters": {
           "source_column": "unit_price_brl",
           "target_column": "unit_price_usd",
@@ -37,7 +37,7 @@
         "target_layer_step": "silver"
       },
       {
-        "template_id": "calculate-total-value-usd-v1",
+        "template_id": "03-transformation-template-calculate-total-value-usd-v1",
         "parameters": {
           "quantity_column": "quantity",
           "unit_price_column": "unit_price_usd",
@@ -46,7 +46,7 @@
         "target_layer_step": "silver"
       },
       {
-        "template_id": "aggregate-daily-sales-by-product-v1",
+        "template_id": "03-transformation-template-aggregate-daily-sales-by-product-v1",
         "parameters": {
           "group_by_columns": [
             "product_id",

@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 from framework.mdda_framework import BaseJob, DataQualityRunner # Importa do framework
 
 class DataQualityJob(BaseJob):
